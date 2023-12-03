@@ -12,7 +12,7 @@ fi
 kernrel="`uname -r`"
 
 case $kernrel in
-  '13.1-STABLE' | '13.2-RELEASE' | '14.0-STABLE' | '14.0-RELEASE' | '15.0-CURRENT') ;;
+  '13.1-RELEASE' | '13.2-RELEASE' | '14.0-STABLE' | '14.0-RELEASE' | '15.0-CURRENT') ;;
   *)
     echo "Using wrong kernel release. Use GhostBSD 20.04 or later to build iso."
     exit 1
@@ -76,6 +76,7 @@ else
   community=""
 fi
 
+arch="amd64"
 workdir="/usr/local"
 livecd="${workdir}/neobsd-build"
 base="${livecd}/base"
@@ -122,6 +123,11 @@ base()
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
   #pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
   #pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
+
+  if [ -z "${arch}" ] ; then
+    arch=amd64
+  fi
+
   VERSIONSUFFIX=$(uname -r | cut -d "-" -f 2)
   FTPDIRECTORY="releases" # "releases" or "snapshots"
   if [ "${VERSIONSUFFIX}" = "CURRENT" ] ; then
