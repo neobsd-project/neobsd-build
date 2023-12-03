@@ -120,8 +120,30 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs ${base_packages} ${release}/var/cache/pkg
-  pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
-  pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
+  #pkg_list="os-generic-kernel os-generic-userland os-generic-userland-lib32"
+  #pkg-static -r ${release} -R ${cwd}/pkg/ install -y -r ${PKGCONG} ${pkg_list}
+  VERSIONSUFFIX=$(uname -r | cut -d "-" -f 2)
+  FTPDIRECTORY="releases" # "releases" or "snapshots"
+  if [ "${VERSIONSUFFIX}" = "CURRENT" ] ; then
+     FTPDIRECTORY="snapshots"
+  fi
+  # RCs are in the 'releases' ftp directory; hence check if $VERSIONSUFFIX begins with 'RC' https://serverfault.com/a/252406
+  if [ "${VERSIONSUFFIX#RC}"x != "${VERSIONSUFFIX}x" ]  ; then
+     FTPDIRECTORY="releases"
+  fi
+
+  if [ ! -f "${base}/base.txz" ] ; then
+    cd ${base}
+    fetch https://download.freebsd.org/ftp/${FTPDIRECTORY}/${arch}/${version}/base.txz
+  fi
+
+  if [ ! -f "${base}/kernel.txz" ] ; then
+    cd ${base}
+    fetch https://download.freebsd.org/ftp/${FTPDIRECTORY}/${arch}/${version}/kernel.txz
+  fi
+  cd ${base}
+  tar -zxvf base.txz -C ${base}
+  tar -zxvf kernel.txz -C ${base}
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
