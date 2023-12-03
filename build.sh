@@ -76,6 +76,7 @@ else
   community=""
 fi
 
+version="13.2-RELEASE"
 arch="amd64"
 workdir="/usr/local"
 livecd="${workdir}/neobsd-build"
