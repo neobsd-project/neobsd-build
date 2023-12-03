@@ -160,7 +160,7 @@ base()
 
 set_neobsd_version()
 {
-  version="-$(cat ${release}/etc/version)"
+  version="-${version}" "-$(cat ${release}/etc/version)"
   isopath="${iso}/${label}${version}${release_stamp}${time_stamp}${community}.iso"
 }
 
